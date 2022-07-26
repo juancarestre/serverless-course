@@ -1,7 +1,8 @@
 # SERVERLESS FRAMEWORK
 
 1. Introduccion
-2. Terminologia: servidor, serverless, serverless framework, cloud, cloud provider, pros and cons
+2. Terminologia: servidor, cliente, serverless, cloud, cloud provider, serverless framework
+    2.2 pros and cons of serverless technologies
 3. instalacion de herramientas (node, npm, python, serverless, aws cli) explicacion breve de que hace cada una y porque se instala
 4. creacion de cuenta en aws, crear usuario admin, crear api keys, hacer aclaraciones de seguridad, hacer conexiones a otros cursos para aprender mas sobre aws
 5. uso basico de serverless framework para crear primer aplicacion hola mundo, se muestra el api,se muestra el serverless cli
@@ -12,7 +13,7 @@
 10. explicacion basica de dynamodb, creamos tabla e insertamos algunos datos manualmente
 11. conectamos la app a dynamodb y traemos los datos con el get
 12. creamos post para insertar datos
-13. DELETE
+13. DELETE con python :nice:
 14. UPDATE
 15. explicacion basica de s3 y como lo usaremoss para almacenar imagenes firmando urls
 16. aplicacion de firma de urls y put a s3 de la imagen
