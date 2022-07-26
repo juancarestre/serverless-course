@@ -1,0 +1,23 @@
+service: serverless-course-hello-world-platzi
+
+provider:
+  name: aws
+  profile: juan
+  runtime: nodejs14.x
+
+plugins:
+  - serverless-offline
+
+functions:
+  hello-world:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: GET
+  bye-world:
+    handler: handler.bye
+    events:
+      - http:
+          path: bye
+          method: POST
