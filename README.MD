@@ -1,4 +1,7 @@
-# SERVERLESS FRAMEWORK
+# SERVERLESS FRAMEWORK COURSE
+
+Our course project
+![Our easy crud sls app](./clases/easy-crud-sls-app.png)
 
 1. Introduccion
 2. Terminologia: servidor, cliente, serverless, cloud, cloud provider, serverless framework
