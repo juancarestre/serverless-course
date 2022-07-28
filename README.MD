@@ -17,6 +17,7 @@ Our course project
 10. explicacion basica de dynamodb, creamos tabla e insertamos algunos datos manualmente
 10b. get con dynamodb local plugin, para tener un ambiente local con un dynamodb local
 11. desplegamos/adaptamos la app a dynamodb remoto y traemos los datos con el get
+11b. organizamos el proyecto, vamos a reducir su tamaño desplegando unicamente lo que necesitamos y nos preparamos para crear el create del crud
 12. creamos post para insertar datos
 13. DELETE con python :nice:
 14. UPDATE
