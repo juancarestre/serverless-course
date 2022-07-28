@@ -19,6 +19,7 @@ Our course project
 11. desplegamos/adaptamos la app a dynamodb remoto y traemos los datos con el get
 11b. organizamos el proyecto, vamos a reducir su tamaño desplegando unicamente lo que necesitamos y nos preparamos para crear el create del crud
 12. creamos post para insertar datos
+12b. re ajustamos nuestra funcion get para obtener usuario enviando el id en el path, mostramos el potencial de api gateway validando logica de negocio
 13. DELETE con python :nice:
 14. UPDATE
 15. explicacion basica de s3 y como lo usaremoss para almacenar imagenes firmando urls
