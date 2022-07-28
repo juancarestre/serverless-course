@@ -1,0 +1,75 @@
+service: user-crud-sls-app
+
+provider:
+  name: aws
+  profile: juan
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'dynamodb:*'
+          Resource: 'arn:aws:dynamodb:us-east-1:597701726802:table/user-crud-sls-app'
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      inMemory: true
+      migrate: true
+      seed: true
+    seed: 
+      users:
+        sources:
+          table: user-crud-sls-app
+          sources: [./users_seed.json]     
+    migration:
+      dir: offline/migrations
+
+package: 
+  individually: true
+  exclude:
+    - ./** #TODO: asi funca en mac, revisar como funciona esto en otros sistemas operativos
+    # - "!*/**" # puede que asi sea en windows o en linux, no lo recuerdo
+
+functions:
+  get:
+    handler: ./get/handler.getUser
+    package:
+      include:
+        - get/handler.js
+    events:
+      - http:
+          path: user
+          method: GET
+  create-user:
+    handler: ./create-user/handler.createUser
+    package:
+      include:
+        - create-user/handler.js
+    events:
+      - http:
+          path: user
+          method: POST
+
+	
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: user-crud-sls-app
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
