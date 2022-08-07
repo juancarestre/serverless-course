@@ -1,0 +1,121 @@
+service: user-crud-sls-app
+
+provider:
+  name: aws
+  profile: juan
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'dynamodb:*'
+          Resource: 'arn:aws:dynamodb:us-east-1:597701726802:table/user-crud-sls-app'
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      inMemory: true
+      migrate: true
+      seed: true
+    seed: 
+      users:
+        sources:
+          table: user-crud-sls-app
+          sources: [./users_seed.json]     
+    migration:
+      dir: offline/migrations
+
+package: 
+  individually: true
+  patterns:
+    #- ./** #TODO: asi funca en mac, revisar como funciona esto en otros sistemas operativos
+    - "!*/**" # asi funciona en mac, funcionara igual en windows?
+
+functions:
+  get:
+    handler: ./get/handler.getUser
+    package:
+      patterns:
+        - get/handler.js
+    events:
+      - http:
+          path: user/{idx}
+          method: GET
+          request:
+            parameters:
+              paths:
+                idx: true
+
+  create-user:
+    handler: ./create-user/handler.createUser
+    package:
+      patterns:
+        - create-user/handler.js
+    events:
+      - http:
+          path: user
+          method: POST
+
+  delete-user:
+    handler: delete-user/handler.delete_user
+    runtime: python3.8
+    package:
+      patterns:
+        - delete-user/handler.py
+    events:
+      - http:
+          path: user/{idx}
+          request:
+            parameters:
+              paths:
+                idx: true
+          method: DELETE
+
+  update-user:
+    handler: ./update-user/handler.updateUser
+    package:
+      patterns:
+        - update-user/handler.js
+    events:
+      - http:
+          path: user/{idx}
+          method: PATCH
+          request:
+            parameters:
+              paths:
+                idx: true
+            schemas:
+              application/json: ${file(api_schemas/update-user-validation.yml)}
+
+  s3-signed-url:
+    handler: ./pre-signed-url/handler.preSignedUrl
+    package:
+      patterns:
+        - pre-signed-url/handler.js
+    events:
+      - http:
+          path: signed_url/
+          method: GET
+
+
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: user-crud-sls-app
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
