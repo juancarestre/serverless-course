@@ -34,9 +34,11 @@ Our course project
 15. explicacion basica de s3 y como lo usaremoss para almacenar imagenes firmando urls
 15b. crear bucket usando sintaxis de cloudformation, organizar lambda con permisos, signaure y validaciones, probar desde local # todo ver si esta clase es muy gorda para partirla en dos
 
-##
+## asegurando la app
 
 16. seguimos hablando de seguridad, nuestro endpoint para subir imagenes firmado funciona pero cualquiera puede subir pedir una url firmada, hablamos de dos formas serverless de asegurar nuestros endpoints (api key, custom authorizer)
+16b.api-key
+16c. custom-authorizer
 
 ### Bonus
 
