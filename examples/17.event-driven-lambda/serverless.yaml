@@ -13,6 +13,10 @@ provider:
         - Effect: Allow
           Action: 's3:*'
           Resource: 'arn:aws:s3:::user-crud-sls-app-bucket-23213213/*'
+        - Effect: Allow
+          Action: sqs:*
+          Resource:
+            Fn::GetAtt: [ userEventsQueue, Arn ]
   apiGateway:
     apiKeys:
       - user-crud-sls-app-apikey
@@ -43,6 +47,8 @@ package:
     #- ./** #TODO: asi funca en mac, revisar como funciona esto en otros sistemas operativos
     - "!*/**" # asi funciona en mac, funcionara igual en windows?
 
+
+
 functions:
   get:
     handler: ./get/handler.getUser
@@ -67,6 +73,15 @@ functions:
       - http:
           path: user
           method: POST
+          authorizer:
+            name: custom-authorizer
+            resultTtlInSeconds: 30
+
+  custom-authorizer:
+    handler: authorizer/handler.authorize
+    package:
+      patterns:
+        - authorizer/handler.js
 
   delete-user:
     handler: delete-user/handler.delete_user
@@ -114,6 +129,35 @@ functions:
               querystrings:
                 filename: true
 
+  process-image:
+    reservedConcurrency: 1
+    handler: ./process-image/handler.processImage
+    package:
+      patterns:
+        - process-image/handler.js
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - userEventsQueue
+              - Arn
+
+  # upload-image:
+  #   handler: ./upload-image/handler.uploadUser
+  #   package:
+  #     patterns:
+  #       - upload-image/handler.js
+  #   events:
+  #     - http:
+  #         path: upload_image/
+  #         private: true
+  #         method: POST
+  #         request:
+  #           parameters:
+  #             querystrings:
+  #               filename: true
+
+
 resources:
   Resources:
     usersTable:
@@ -150,3 +194,8 @@ resources:
                   - !Ref userImagesBucket
                   - /*
               Principal: '*'
+    userEventsQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: sqs-queue-${opt:stage, 'dev'}.fifo
+        FifoQueue: true

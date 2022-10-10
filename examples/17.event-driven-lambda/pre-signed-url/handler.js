@@ -10,7 +10,7 @@ const s3 = new AWS.S3({
   }) // https://aws.amazon.com/pt/premiumsupport/knowledge-center/presigned-url-s3-bucket-expiration/
 
 const preSignedUrl = async (event, context) => {
-
+    
     const filename = event.queryStringParameters.filename
 
     const signedUrl = await s3.getSignedUrlPromise("putObject", {
