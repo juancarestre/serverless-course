@@ -1,6 +1,9 @@
 
 #python
 __pycache__
+  
+.vscode
+borrame
 
 # Logs
 logs
