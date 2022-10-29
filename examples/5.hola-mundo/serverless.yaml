@@ -2,7 +2,6 @@ service: serverless-course-hello-world-platzi
 
 provider:
   name: aws
-  profile: juan
   runtime: nodejs14.x
 
 functions:
