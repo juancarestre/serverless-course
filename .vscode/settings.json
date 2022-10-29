@@ -1,5 +1,0 @@
-{
-    "yaml.schemas": {
-        "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json": "file:///Users/peto/Code/work/serverless-course/examples/16.using-api-key/serverless.yaml"
-    }
-}
