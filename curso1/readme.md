@@ -36,3 +36,7 @@ Acceder a la consola web, crear api key access key, hacer aclaraciones de seguri
 ### 7. Iniciamos nuestro proyecto con serverless framework
 
 Uso basico de serverless framework para crear primer aplicacion hola mundo, se muestra el api,se muestra el serverless CLI
+
+### 8. Revision de los recursos creados
+
+Recorrer la consola de AWS para detallar los recursos creados por sls framework, mostrar como sls framework abstrae y nos ahorra trabajo
