@@ -44,3 +44,11 @@ Recorrer la consola de AWS para detallar los recursos creados por sls framework,
 ### 9. Desarrollo local con serverless framework
 
 Ejecutar nuestra aplicacion serverless en local, instalar y probar sls offline
+
+## Desarrollando con Serverless Framework
+
+### 10. Recapitulacion de la aplicacion del proyecto y creamos nuestro GET
+
+Iniiciar con el proyecto,crear get, agregar codigo para jalar de dynamodb y sdk de amazon (no va a funcionar porque aun no existe la db), invitar al estudiante a ver la explicacion de dynamodb en la proxima clase o a ver el curso de dynamodb
+
+### 11. DynamoDB para nuestro proyecto

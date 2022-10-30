@@ -1,0 +1,16 @@
+{
+  "name": "curso-serverless-framework-hola-mundo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.1182.0",
+    "serverless": "^3.21.0",
+    "serverless-offline": "^9.0.0"
+  }
+}

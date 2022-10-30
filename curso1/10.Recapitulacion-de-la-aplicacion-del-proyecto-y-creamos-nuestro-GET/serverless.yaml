@@ -1,0 +1,18 @@
+service: user-crud-sls-app
+
+provider:
+  name: aws
+  profile: juan
+  runtime: nodejs14.x
+
+plugins:
+  - serverless-offline
+
+functions:
+  get:
+    handler: handler.getUser
+    events:
+      - http:
+          path: user
+          method: GET
+
