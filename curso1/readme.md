@@ -40,3 +40,7 @@ Uso basico de serverless framework para crear primer aplicacion hola mundo, se m
 ### 8. Revision de los recursos creados
 
 Recorrer la consola de AWS para detallar los recursos creados por sls framework, mostrar como sls framework abstrae y nos ahorra trabajo
+
+### 9. Desarrollo local con serverless framework
+
+Ejecutar nuestra aplicacion serverless en local, instalar y probar sls offline
