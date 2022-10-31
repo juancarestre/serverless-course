@@ -1,5 +1,11 @@
 const AWS = require("aws-sdk")
-const dynamoDB = new AWS.DynamoDB.DocumentClient()
+
+const dynamoDB = new AWS.DynamoDB.DocumentClient({
+    accessKeyId: 'YOUR-ACCESSKEYID' ,
+    secretAccessKey: 'YOUR-SECRETACCESSKEY' ,
+    region: "local",
+    endpoint: 'http://localhost:8000',
+})
 
 const getUser = async (event, context) => {
     const params = {

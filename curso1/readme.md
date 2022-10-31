@@ -52,3 +52,16 @@ Ejecutar nuestra aplicacion serverless en local, instalar y probar sls offline
 Iniiciar con el proyecto,crear get, agregar codigo para jalar de dynamodb y sdk de amazon (no va a funcionar porque aun no existe la db), invitar al estudiante a ver la explicacion de dynamodb en la proxima clase o a ver el curso de dynamodb
 
 ### 11. DynamoDB para nuestro proyecto
+
+Explicar como se usara dynamodb en nuestro proyecto, creamos la tabla y lo asociamos con el get (dentro de AWS, asociamos con el get y ahora deberia funcionar nuestra app en local ya que la db si existe)
+
+### 12. DynamoDB Local para ambiente local
+
+Mostrar e usar dynamodb local para mejorar la devexperience
+
+### 13. Desplegamos nuestro GET y lo probamos
+
+Organizamos el cliente para funcione en local y en AWS cuando despleguemos, cambiamos el query para que tome el id como un pathparameter, vemos el error en la aplicacion
+vemos el error en cloudwatch, ajustamos rol y desplegamos para solucionar nuestro error, probamos insertando un item en la base de datos
+
+### 14. Creamos POST para crear usuarios y usamos Apigateway para validar logica de negocio
