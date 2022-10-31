@@ -1,0 +1,71 @@
+service: user-crud-sls-app
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'dynamodb:*'
+          Resource: 'arn:aws:dynamodb:us-east-1:597701726802:table/user-crud-sls-app'
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      inMemory: true
+      migrate: true
+      seed: true
+    seed: 
+      users:
+        sources:
+          table: user-crud-sls-app
+          sources: [./users_seed.json]     
+    migration:
+      dir: offline/migrations
+
+
+
+functions:
+  getUser:
+    handler: getuser/handler.getUser
+    events:
+      - http:
+          path: user/{id}
+          method: GET
+  createUser:
+    handler: createuser/handler.createUser
+    events:
+      - http:
+          path: user
+          method: POST
+  deleteUser:
+    handler: deleteuser/handler.delete_user
+    runtime: python3.8
+    events:
+      - http:
+          path: user/{id}
+          method: DELETE
+
+	
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: user-crud-sls-app
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

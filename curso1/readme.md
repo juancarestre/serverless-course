@@ -64,4 +64,13 @@ Mostrar e usar dynamodb local para mejorar la devexperience
 Organizamos el cliente para funcione en local y en AWS cuando despleguemos, cambiamos el query para que tome el id como un pathparameter, vemos el error en la aplicacion
 vemos el error en cloudwatch, ajustamos rol y desplegamos para solucionar nuestro error, probamos insertando un item en la base de datos
 
-### 14. Creamos POST para crear usuarios y usamos Apigateway para validar logica de negocio
+### 14. Creamos POST para crear usuarios con un id random
+
+probamos en local y desplegamos
+
+### 15. Hacemos un DELETE users con python
+
+Se hace enfasis en los diferentes lenguajes en los que podemos programar, serverless es agnostico al lenguaje por eso lo haremos en python
+
+### 16. UPDATE para actualizar datos 
+
