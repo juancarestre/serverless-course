@@ -1,0 +1,110 @@
+service: user-crud-sls-app
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'dynamodb:*'
+          Resource: 'arn:aws:dynamodb:us-east-1:597701726802:table/user-crud-sls-app'
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      inMemory: true
+      migrate: true
+      seed: true
+    seed: 
+      users:
+        sources:
+          table: user-crud-sls-app
+          sources: [./users_seed.json]     
+    migration:
+      dir: offline/migrations
+
+package: 
+  individually: true
+  patterns:
+    - "!*/**"
+
+functions:
+  getUser:
+    handler: getuser/handler.getUser
+    package:
+      patterns:
+        - "getuser/handler.js"
+    events:
+      - http:
+          path: user/{id}
+          method: GET
+          request:
+            parameters:
+              paths:
+                id: true
+  createUser:
+    handler: createuser/handler.createUser
+    package:
+      patterns:
+        - "createuser/handler.js"
+    events:
+      - http:
+          path: user
+          method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/create_user_schema.json)}
+
+  deleteUser:
+    handler: deleteuser/handler.delete_user
+    runtime: python3.8
+    package:
+      patterns:
+        - "deleteuser/handler.py"
+    events:
+      - http:
+          path: user/{id}
+          method: DELETE
+          request:
+            parameters:
+              paths:
+                id: true
+  updateUser:
+    handler: updateuser/handler.updateUser
+    package:
+      patterns:
+        - "updateuser/handler.js"
+    events:
+      - http:
+          path: user/{id}
+          method: PATCH
+          request:
+            parameters:
+              paths:
+                id: true
+            schemas:
+              application/json: ${file(schemas/create_user_schema.json)}
+
+        
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: user-crud-sls-app
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

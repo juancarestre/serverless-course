@@ -1,0 +1,22 @@
+	
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "User schema",
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Name shema",
+        "default": "",
+        "pattern": "^[a-zA-Z]+$"
+      },
+      "image": {
+        "type": "string",
+        "title": "Name shema",
+        "default": "",
+        "pattern": "^[a-zA-Z]+$"
+      }
+    }
+  }
