@@ -1,0 +1,41 @@
+service: sqstest-withlift
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+plugins:
+  - serverless-lift
+  - serverless-apigateway-service-proxy
+
+constructs:
+  my-queue:
+    type: queue
+    worker:
+      handler: handler.hellosqs
+      package:
+        patterns:
+          - "handler.js"        
+    extensions:
+      queue:
+        Properties:
+          QueueName: "my-queue-b"
+package:
+  patterns:
+    - "!*/**"
+
+custom:
+  apiGatewayServiceProxies:
+    - sqs:
+        path: /sqs
+        method: post
+        queueName: my-queue-b # { 'Fn::GetAtt': ['SQSQueue', 'QueueName'] }
+        cors: true
+        response:
+          template:
+            success: |-
+              { "message: "accepted" }
+            clientError: |-
+              { "message": "there is an error in your request" }
+            serverError: |-
+              { "message": "there was an error handling your request" } 
