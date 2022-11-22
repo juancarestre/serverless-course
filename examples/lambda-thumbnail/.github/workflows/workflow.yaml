@@ -2,7 +2,7 @@ name: Deploy DEV
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-js-layer-deps:
