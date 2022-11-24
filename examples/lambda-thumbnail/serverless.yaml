@@ -1,0 +1,46 @@
+service: sls-thumbnail-test
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 's3:*'
+          Resource: 'arn:aws:s3:::slscourse-images/*'
+
+plugins:
+  - serverless-offline
+
+package:
+  individually: true
+  patterns:
+    - "!*/**"
+
+layers:
+  base:
+    name: "${self:service}-${self:custom.stage}-dependencies"
+    compatibleRuntimes:
+      - "nodejs14.x"
+    retain: false
+    package:
+      artifact: nodejs.zip
+
+
+functions:
+  thumbnail-generator:
+    architecture: arm64
+    handler: ./handler.thumbnailGenerator
+    package:
+      patterns:
+        - handler.js
+    layers:
+      - { Ref: BaseLambdaLayer }
+    events:
+      - s3:
+          bucket: slscourse-images
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: uploads/
