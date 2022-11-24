@@ -3,6 +3,7 @@ service: user-crud-sls-app
 provider:
   name: aws
   runtime: nodejs14.x
+  profile: juan
   iam:
     role:
       statements:
@@ -22,15 +23,15 @@ custom:
       inMemory: true
       migrate: true
       seed: true
-    seed: 
+    seed:
       users:
         sources:
           table: user-crud-sls-app
-          sources: [./users_seed.json]     
+          sources: [./users_seed.json]
     migration:
       dir: offline/migrations
 
-package: 
+package:
   individually: true
   patterns:
     - "!*/**"
@@ -92,7 +93,7 @@ functions:
             schemas:
               application/json: ${file(schemas/create_user_schema.json)}
 
-        
+
 resources:
   Resources:
     usersTable:
