@@ -2,10 +2,8 @@ service: user-crud-sls-app
 
 provider:
   name: aws
-  runtime: nodejs14.x
   profile: juan
-  environment:
-    BUCKET: user-crud-sls-app-bucket-33123214
+  runtime: nodejs14.x
   iam:
     role:
       statements:
@@ -14,12 +12,17 @@ provider:
           Resource: 'arn:aws:dynamodb:us-east-1:597701726802:table/user-crud-sls-app'
         - Effect: Allow
           Action: 's3:*'
-          Resource: 'arn:aws:s3:::user-crud-sls-app-bucket-33123214/*'
+          Resource: 'arn:aws:s3:::user-crud-sls-app-bucket-23213213/*'
+  apiGateway:
+    apiKeys:
+      - user-crud-sls-app-apikey
 
 plugins:
   - serverless-offline
   - serverless-dynamodb-local
-
+  - serverless-lift
+  - serverless-apigateway-service-proxy
+###
 custom:
   dynamodb:
     stages:
@@ -35,68 +38,106 @@ custom:
           sources: [./users_seed.json]
     migration:
       dir: offline/migrations
+  apiGatewayServiceProxies: ###
+    - sqs:
+        path: /userlike
+        method: post
+        queueName: my-sqs-queue
+        cors: true
+        response:
+          template:
+            success: |-
+              { "message": "accepted" }
+            clientError: |-
+              { "message": "there is an error in your request" }
+            serverError: |-
+              { "message": "there was an error handling your request" }
+
+constructs:
+  sqs-queue-and-worker:
+    type: queue
+    batchSize: 1
+    worker:
+      handler: user-like/handler.userlike
+      package:
+        patterns:
+          - "user-like/handler.js"
+      reservedConcurrency: 1
+    extensions:
+      queue:
+        Properties:
+          QueueName: "my-sqs-queue" ####
 
 package:
   individually: true
   patterns:
-    - "!*/**"
+    #- ./** #TODO: asi funca en mac, revisar como funciona esto en otros sistemas operativos
+    - "!*/**" # asi funciona en mac, funcionara igual en windows?
 
 functions:
-  getUser:
-    handler: getuser/handler.getUser
+  get:
+    handler: ./get/handler.getUser
     package:
       patterns:
-        - "getuser/handler.js"
+        - get/handler.js
     events:
       - http:
-          path: user/{id}
+          path: user/{idx}
           method: GET
           request:
             parameters:
               paths:
-                id: true
-  createUser:
-    handler: createuser/handler.createUser
+                idx: true
+
+  create-user:
+    handler: ./create-user/handler.createUser
     package:
       patterns:
-        - "createuser/handler.js"
+        - create-user/handler.js
     events:
       - http:
           path: user
           method: POST
-          request:
-            schemas:
-              application/json: ${file(schemas/create_user_schema.json)}
+          authorizer:
+            name: custom-authorizer
+            resultTtlInSeconds: 30
 
-  deleteUser:
-    handler: deleteuser/handler.delete_user
+  custom-authorizer:
+    handler: authorizer/handler.authorize
+    package:
+      patterns:
+        - authorizer/handler.js
+
+  delete-user:
+    handler: delete-user/handler.delete_user
     runtime: python3.8
     package:
       patterns:
-        - "deleteuser/handler.py"
+        - delete-user/handler.py
     events:
       - http:
-          path: user/{id}
-          method: DELETE
+          path: user/{idx}
           request:
             parameters:
               paths:
-                id: true
-  updateUser:
-    handler: updateuser/handler.updateUser
+                idx: true
+          method: DELETE
+
+  update-user:
+    handler: ./update-user/handler.updateUser
     package:
       patterns:
-        - "updateuser/handler.js"
+        - update-user/handler.js
     events:
       - http:
-          path: user/{id}
+          path: user/{idx}
           method: PATCH
           request:
             parameters:
               paths:
-                id: true
+                idx: true
             schemas:
-              application/json: ${file(schemas/create_user_schema.json)}
+              application/json: ${file(api_schemas/update-user-validation.yml)}
 
   s3-signed-url:
     handler: ./pre-signed-url/handler.preSignedUrl
@@ -106,6 +147,7 @@ functions:
     events:
       - http:
           path: signed_url/
+          private: true
           method: GET
           request:
             parameters:
@@ -131,7 +173,7 @@ resources:
       Type: 'AWS::S3::Bucket'
       Properties:
         AccessControl: PublicRead
-        BucketName: user-crud-sls-app-bucket-33123214
+        BucketName: user-crud-sls-app-bucket-23213213
     userImagesBucketPolicy: # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html
       Type: AWS::S3::BucketPolicy
       Properties:
