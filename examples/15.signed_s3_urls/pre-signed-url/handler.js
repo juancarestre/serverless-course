@@ -14,7 +14,7 @@ const preSignedUrl = async (event, context) => {
     const filename = event.queryStringParameters.filename
 
     const signedUrl = await s3.getSignedUrlPromise("putObject", {
-        Key: filename,
+        Key: `upload/${filename}`,
         Bucket: 'user-crud-sls-app-bucket-23213213',
         Expires: 300,
       });
