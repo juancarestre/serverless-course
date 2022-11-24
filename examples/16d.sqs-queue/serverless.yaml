@@ -20,7 +20,9 @@ provider:
 plugins:
   - serverless-offline
   - serverless-dynamodb-local
-
+  - serverless-lift
+  - serverless-apigateway-service-proxy
+###
 custom:
   dynamodb:
     stages:
@@ -29,21 +31,48 @@ custom:
       inMemory: true
       migrate: true
       seed: true
-    seed: 
+    seed:
       users:
         sources:
           table: user-crud-sls-app
-          sources: [./users_seed.json]     
+          sources: [./users_seed.json]
     migration:
       dir: offline/migrations
+  apiGatewayServiceProxies: ###
+    - sqs:
+        path: /userlike
+        method: post
+        queueName: my-sqs-queue
+        cors: true
+        response:
+          template:
+            success: |-
+              { "message": "accepted" }
+            clientError: |-
+              { "message": "there is an error in your request" }
+            serverError: |-
+              { "message": "there was an error handling your request" }
 
-package: 
+constructs:
+  sqs-queue-and-worker:
+    type: queue
+    batchSize: 1
+    worker:
+      handler: user-like/handler.userlike
+      package:
+        patterns:
+          - "user-like/handler.js"
+      reservedConcurrency: 1
+    extensions:
+      queue:
+        Properties:
+          QueueName: "my-sqs-queue" ####
+
+package:
   individually: true
   patterns:
     #- ./** #TODO: asi funca en mac, revisar como funciona esto en otros sistemas operativos
     - "!*/**" # asi funciona en mac, funcionara igual en windows?
-
-
 
 functions:
   get:
@@ -69,7 +98,7 @@ functions:
       - http:
           path: user
           method: POST
-          authorizer: 
+          authorizer:
             name: custom-authorizer
             resultTtlInSeconds: 30
 
@@ -123,7 +152,7 @@ functions:
           request:
             parameters:
               querystrings:
-                filename: true  
+                filename: true
 
 resources:
   Resources:
